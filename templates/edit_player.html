@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Edit Player{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">Edit Player</h2>
+    <form method="POST">
+        <div class="mb-3">
+            <label for="name" class="form-label">Name:</label>
+            <input type="text" name="name" class="form-control" value="{{ player.name }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="position" class="form-label">Position:</label>
+            <input type="text" name="position" class="form-control" value="{{ player.position }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="jersey_number" class="form-label">Jersey Number:</label>
+            <input type="number" name="jersey_number" class="form-control" value="{{ player.jersey_number }}" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Update Player</button>
+        <a href="{{ url_for('player_stats') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}
