@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Basketball App{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <!-- Total Players -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm border-0 hover-shadow h-100 bg-gradient text-black" style="background: linear-gradient(135deg, #007bff, #0056b3);">
+                <div class="card-body text-center">
+                    <i class="bi bi-people-fill display-5 mb-2"></i>
+                    <h5 class="card-title">Total Players</h5>
+                    <p class="card-text display-4 fw-bold">{{ total_players }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Games Played -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm border-0 hover-shadow h-100 bg-gradient text-black" style="background: linear-gradient(135deg, #28a745, #1e7e34);">
+                <div class="card-body text-center">
+                    <i class="bi bi-bookmark-check-fill display-5 mb-2"></i>
+                    <h5 class="card-title">Games Played</h5>
+                    <p class="card-text display-4 fw-bold">{{ total_games }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Points -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm border-0 hover-shadow h-100 bg-gradient text-black" style="background: linear-gradient(135deg, #17a2b8, #117a8b);">
+                <div class="card-body text-center">
+                    <i class="bi bi-trophy-fill display-5 mb-2"></i>
+                    <h5 class="card-title">Total Points Scored</h5>
+                    <p class="card-text display-4 fw-bold">{{ total_points }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Team Points Chart -->
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <h3 class="mb-3">📈 Team Points Over Time</h3>
+            <canvas id="pointsChart" height="100"></canvas>
+        </div>
+    </div>
+
+
+    <!-- Recent Games Section -->
+    <div class="row mt-4">
+        <div class="col">
+            <h3 class="mb-3">🏀 Recent Games</h3>
+            {% if recent_games %}
+                <div class="list-group shadow-sm">
+                    {% for game in recent_games %}
+                        <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ game.date.strftime('%b %d, %Y') }}</strong> vs <span class="text-primary fw-bold">{{ game.opponent }}</span>
+                            </div>
+                            <span class="badge rounded-pill 
+                                {% if game.result == 'Win' %} bg-success 
+                                {% elif game.result == 'Loss' %} bg-danger 
+                                {% else %} bg-secondary 
+                                {% endif %}">
+                                {{ game.team_score }} - {{ game.opponent_score }}
+                            </span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-muted">No recent games available.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  const ctx = document.getElementById('pointsChart').getContext('2d');
+
+  const chartLabels = JSON.parse('{{ chart_labels | tojson | safe }}');
+  const chartScores = JSON.parse('{{ chart_scores | tojson | safe }}');
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: chartLabels,
+      datasets: [{
+        label: 'Team Score',
+        data: chartScores,
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        borderWidth: 2,
+        tension: 0.3,
+        fill: true,
+        pointBackgroundColor: 'rgba(54, 162, 235, 1)'
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true,
+          title: {
+            display: true,
+            text: 'Points'
+          }
+        },
+        x: {
+          title: {
+            display: true,
+            text: 'Date'
+          }
+        }
+      },
+      plugins: {
+        legend: {
+          display: true
+        }
+      }
+    }
+  });
+</script>
+
+
+{% endblock %}

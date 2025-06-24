@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Add New Team</h2>
+    <form method="POST">
+        <div class="form-group">
+            <label for="name">Team Name</label>
+            <input type="text" class="form-control" name="name" placeholder="Enter team name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="coach_name">Coach Name</label>
+            <input type="text" class="form-control" name="coach_name" placeholder="Enter coach name" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Add Team</button>
+        <a href="{{ url_for('dashboard.dashboard') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

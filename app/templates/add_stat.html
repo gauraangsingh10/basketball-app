@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Add Stat{% endblock %}
+{% block content %}
+<h2>Add Stat</h2>
+<form method="POST">
+    <div class="mb-3">
+        <label>Player</label>
+        <select name="player_id" class="form-select">
+            {% for player in players %}
+                <option value="{{ player.id }}">{{ player.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="mb-3">
+        <label>Game</label>
+        <select name="game_id" class="form-select">
+            {% for game in games %}
+                <option value="{{ game.id }}">Game {{ game.id }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="mb-3"><label>Points</label><input type="number" name="points" class="form-control"></div>
+    <div class="mb-3"><label>Rebounds</label><input type="number" name="rebounds" class="form-control"></div>
+    <div class="mb-3"><label>Assists</label><input type="number" name="assists" class="form-control"></div>
+    <div class="mb-3"><label>Blocks</label><input type="number" name="blocks" class="form-control"></div>
+    <div class="mb-3"><label>Steals</label><input type="number" name="steals" class="form-control"></div>
+    <div class="mb-3"><label>Fouls</label><input type="number" name="fouls" class="form-control"></div>
+    <div class="mb-3"><label>Turnovers</label><input type="number" name="turnovers" class="form-control"></div>
+    <div class="mb-3"><label>Minutes Played</label><input type="number" name="minutes_played" class="form-control"></div>
+    <button type="submit" class="btn btn-primary">Add Stat</button>
+</form>
+{% endblock %}
