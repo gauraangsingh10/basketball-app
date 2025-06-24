@@ -3,7 +3,6 @@ wheel
 alembic==1.14.1
 arabic-reshaper==3.0.0
 asn1crypto==1.5.1
-backports.zoneinfo==0.2.1
 beautifulsoup4==4.13.4
 blinker==1.8.2
 certifi==2025.1.31
