@@ -9,11 +9,13 @@ from itsdangerous import URLSafeTimedSerializer
 from dotenv import load_dotenv
 import os
 
+load_dotenv()
+
 # Initialize Flask app and database
 
 
 app = Flask(__name__)
-app.secret_key = os.getenv("SECRET_KEY")
+app.secret_key = os.environ.get("SECRET_KEY")
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///basketball.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
@@ -137,14 +139,7 @@ def reset_password(token):
     return render_template('reset_password.html')
 
 
-    if request.method == 'POST':
-        new_password = request.form.get('password')
-        user.password = generate_password_hash(new_password)
-        db.session.commit()
-        flash('Your password has been updated!', 'success')
-        return redirect(url_for('login'))
 
-    return render_template('reset_password.html')
 
 
 # --------------- Player Routes ---------------

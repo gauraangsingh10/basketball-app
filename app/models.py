@@ -1,4 +1,4 @@
-from extensions import db
+from .extensions import db
 from flask_login import UserMixin
 from itsdangerous import URLSafeTimedSerializer
 
@@ -6,6 +6,9 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
+        
+    team_id = db.Column(db.Integer, db.ForeignKey('team.id'))
+    team = db.relationship('Team', backref='users')
 
     def get_reset_token(self, secret_key):
         s = URLSafeTimedSerializer(secret_key)
@@ -62,3 +65,5 @@ class Stat(db.Model):
     fouls = db.Column(db.Integer, default=0)
     turnovers = db.Column(db.Integer, default=0)
     minutes_played = db.Column(db.Integer, default=0)
+
+    game = db.relationship('Game', backref='stats')
