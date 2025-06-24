@@ -1,6 +1,5 @@
 setuptools>=65.5.0
 wheel
-build
 alembic==1.14.1
 arabic-reshaper==3.0.0
 asn1crypto==1.5.1
