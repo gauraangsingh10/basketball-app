@@ -1,0 +1,8 @@
+services:
+  - type: web
+    name: basketball-stats
+    env: python
+    buildCommand: |
+      pip install --upgrade pip setuptools wheel build
+      pip install -r requirements.txt
+    startCommand: gunicorn run:app
