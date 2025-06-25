@@ -79,18 +79,19 @@ def add_team():
 
     return render_template("add_team.html")
 
-@teams_bp.route('/team/<int:team_id>/delete', methods=['POST'])
+@teams_bp.route('/team/<int:team_id>/delete', methods=['POST'])  # ✅ Only POST
 @login_required
 def delete_team(team_id):
     team = Team.query.get_or_404(team_id)
 
-    # Optional: Prevent deleting if the team has players or games
+    # Optional: prevent delete if related data exists
     if team.players or team.games:
         flash("Cannot delete team with players or games. Please delete them first.", "danger")
         return redirect(url_for('teams.team_stats'))
 
     db.session.delete(team)
     db.session.commit()
-    flash(f'Team "{team.name}" has been deleted.', 'success')
+
+    flash(f'Team \"{team.name}\" has been deleted.', 'success')
     return redirect(url_for('teams.team_stats'))
 
