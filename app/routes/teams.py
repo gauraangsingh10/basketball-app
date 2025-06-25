@@ -79,7 +79,7 @@ def add_team():
 
     return render_template("add_team.html")
 
-@teams_bp.route('/team/<int:team_id>/delete', methods=['POST', 'GET'])
+@teams_bp.route('/team/<int:team_id>/delete', methods=['POST'])
 @login_required
 def delete_team(team_id):
     team = Team.query.get_or_404(team_id)
