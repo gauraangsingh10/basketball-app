@@ -18,13 +18,13 @@ dashboard_bp = Blueprint('dashboard', __name__)
 def dashboard():
     team_id = current_user.team_id
 
-    total_players = Player.query.filter_by(team_id=team_id).count()
+    total_players = Player.query.filter_by(team_id=team_id, user_id=current_user.id).count()
     total_games = Game.query.filter_by(team_id=team_id).count()
 
     total_points = (
         db.session.query(db.func.sum(Stat.points))
         .join(Player, Stat.player_id == Player.id)
-        .filter(Player.team_id == team_id)
+        .filter(Player.team_id == team_id, Player.user_id == current_user.id)
         .scalar() or 0
     )
 
@@ -34,7 +34,6 @@ def dashboard():
         .limit(5)
         .all()
     )
-
 
     chart_labels = [game.date.strftime('%b %d') for game in reversed(recent_games)]
     chart_scores = [game.team_score for game in reversed(recent_games)]
@@ -48,4 +47,3 @@ def dashboard():
         chart_labels=chart_labels,
         chart_scores=chart_scores
     )
-

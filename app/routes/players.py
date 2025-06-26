@@ -10,7 +10,7 @@ players_bp = Blueprint('players', __name__, url_prefix='/players')
 @players_bp.route('/player_stats')
 @login_required
 def player_stats():
-    players = Player.query.all()
+    players = Player.query.filter_by(user_id=current_user.id).all()
     player_data = []
 
     for player in players:
@@ -42,14 +42,16 @@ def player_stats():
 @players_bp.route('/player/<int:player_id>')
 @login_required
 def player_detail(player_id):
-    player = Player.query.get_or_404(player_id)
+    player = Player.query.filter_by(id=player_id, user_id=current_user.id).first_or_404()
+
     stats = Stat.query.filter_by(player_id=player.id).join(Game).order_by(Game.date.desc()).all()
     return render_template('player_detail.html', player=player, stats=stats)
 
 @players_bp.route('/player/<int:player_id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit_player(player_id):
-    player = Player.query.get_or_404(player_id)
+    player = Player.query.filter_by(id=player_id, user_id=current_user.id).first_or_404()
+
 
     if request.method == 'POST':
         player.name = request.form['name']
@@ -64,7 +66,7 @@ def edit_player(player_id):
 @players_bp.route('/player/<int:player_id>/delete', methods=['POST', 'GET'])
 @login_required
 def delete_player(player_id):
-    player = Player.query.get_or_404(player_id)
+    player = Player.query.filter_by(id=player_id, user_id=current_user.id).first_or_404()
     db.session.delete(player)
     db.session.commit()
     flash(f'Player \"{player.name}\" has been deleted.', 'danger')
@@ -83,8 +85,10 @@ def add_player():
             name=name,
             jersey_number=jersey_number,
             position=position,
-            team_id=current_user.team_id  # ✅ Important!
+            team_id=current_user.team_id,
+            user_id=current_user.id  # ✅ Critical!
         )
+
         db.session.add(new_player)
         db.session.commit()
         flash('Player added successfully!', 'success')
@@ -96,7 +100,8 @@ def add_player():
 @login_required
 def add_stat():
     # Only fetch players and games for the current user's team
-    players = Player.query.filter_by(team_id=current_user.team_id).all()
+    players = Player.query.filter_by(team_id=current_user.team_id, user_id=current_user.id).all()
+
     games = Game.query.filter_by(team_id=current_user.team_id).all()
 
     if request.method == 'POST':
@@ -135,7 +140,8 @@ def add_stat():
 @login_required
 def add_stats(game_id):
     game = Game.query.get_or_404(game_id)
-    players = Player.query.filter_by(team_id=game.team_id).all()
+    players = Player.query.filter_by(team_id=current_user.team_id, user_id=current_user.id).all()
+
 
     if request.method == 'POST':
         for player in players:

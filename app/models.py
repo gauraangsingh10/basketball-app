@@ -56,7 +56,8 @@ class Game(db.Model):
     opponent_score = db.Column(db.Integer)
     team_id = db.Column(db.Integer, db.ForeignKey('team.id'), nullable=True)
     team = db.relationship('Team', back_populates='games')
-
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False) 
+    user = db.relationship('User', backref='games')
 
 class Stat(db.Model):
     id = db.Column(db.Integer, primary_key=True)

@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from ..models import Game, Team, Stat, Player
 from ..extensions import db
-from flask_login import login_required
+from flask_login import login_required, current_user
 from datetime import datetime
 
 games_bp = Blueprint('games', __name__, url_prefix='/games')
@@ -40,8 +40,10 @@ def add_game():
             result=result,
             team_score=team_score,
             opponent_score=opponent_score,
-            team_id=team_id
+            team_id=team_id,
+            user_id=current_user.id 
         )
+
         db.session.add(new_game)
         db.session.commit()
         return redirect(url_for('games.games'))
