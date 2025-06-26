@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% extends "base.html" %}
 
 {% block title %}Add Player{% endblock %}
@@ -31,3 +32,38 @@
   <button type="submit" class="btn btn-primary">Add Player</button>
 </form>
 {% endblock %}
+=======
+{% extends "base.html" %}
+
+{% block title %}Add Player{% endblock %}
+
+{% block content %}
+<h2>Add New Player</h2>
+<form method="POST" class="mt-4">
+
+  <div class="mb-3">
+    <label for="name" class="form-label">Player Name</label>
+    <input type="text" class="form-control" id="name" name="name" required>
+  </div>
+
+  <div class="mb-3">
+    <label for="jersey_number" class="form-label">Jersey Number</label>
+    <input type="number" class="form-control" id="jersey_number" name="jersey_number">
+  </div>
+
+  <div class="mb-3">
+    <label for="position" class="form-label">Position</label>
+    <select class="form-select" id="position" name="position" required>
+      <option value="" disabled selected>Select a position</option>
+      <option value="Point Guard">Point Guard</option>
+      <option value="Shooting Guard">Shooting Guard</option>
+      <option value="Small Forward">Small Forward</option>
+      <option value="Power Forward">Power Forward</option>
+      <option value="Center">Center</option>
+    </select>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Add Player</button>
+</form>
+{% endblock %}
+>>>>>>> 70ff187beddc9ee504183bebd5c2abb6f07add73

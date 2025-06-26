@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% extends 'base.html' %}
 {% block content %}
 <h2>Edit Game</h2>
@@ -35,3 +36,42 @@
     <a href="{{ url_for('games.games') }}" class="btn btn-secondary">Cancel</a>
 </form>
 {% endblock %}
+=======
+{% extends 'base.html' %}
+{% block content %}
+<h2>Edit Game</h2>
+<form method="POST">
+    <label>Date:</label>
+    <input type="date" name="date" class="form-control" value="{{ game.date }}">
+    
+    <label>Opponent:</label>
+    <input type="text" name="opponent" class="form-control" value="{{ game.opponent }}">
+
+    <label>Location:</label>
+    <input type="text" name="location" class="form-control" value="{{ game.location }}">
+
+    <label>Result:</label>
+    <select name="result" class="form-control">
+        <option value="Win" {% if game.result == 'Win' %}selected{% endif %}>Win</option>
+        <option value="Loss" {% if game.result == 'Loss' %}selected{% endif %}>Loss</option>
+    </select>
+
+    <label>Team Score:</label>
+    <input type="number" name="team_score" class="form-control" value="{{ game.team_score }}">
+
+    <label>Opponent Score:</label>
+    <input type="number" name="opponent_score" class="form-control" value="{{ game.opponent_score }}">
+
+    <label>Team:</label>
+    <select name="team_id" class="form-control">
+        {% for team in teams %}
+            <option value="{{ team.id }}" {% if team.id == game.team_id %}selected{% endif %}>{{ team.name }}</option>
+        {% endfor %}
+    </select>
+
+    <br>
+    <button type="submit" class="btn btn-primary">Update Game</button>
+    <a href="{{ url_for('games.games') }}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}
+>>>>>>> 70ff187beddc9ee504183bebd5c2abb6f07add73

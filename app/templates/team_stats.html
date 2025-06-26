@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% extends 'base.html' %}
 
 {% block title %}Team Stats{% endblock %}
@@ -63,3 +64,70 @@
     {% endif %}
 </div>
 {% endblock %}
+=======
+{% extends 'base.html' %}
+
+{% block title %}Team Stats{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="mb-5 text-center fw-bold text-dark">Team Statistics Overview</h2>
+
+    {% if team %}
+    <div class="row justify-content-center">
+        <!-- Total Stats Card -->
+        <div class="col-md-5 mb-4">
+            <div class="card shadow rounded-4">
+                <div class="card-header bg-primary text-white text-center rounded-top-4">
+                    <h5 class="mb-0">Total Stats</h5>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Games Played: <strong>{{ totals.games }}</strong></li>
+                    <li class="list-group-item">Points: <strong>{{ totals.points }}</strong></li>
+                    <li class="list-group-item">Assists: <strong>{{ totals.assists }}</strong></li>
+                    <li class="list-group-item">Rebounds: <strong>{{ totals.rebounds }}</strong></li>
+                    <li class="list-group-item">Steals: <strong>{{ totals.steals }}</strong></li>
+                    <li class="list-group-item">Blocks: <strong>{{ totals.blocks }}</strong></li>
+                    <li class="list-group-item">Turnovers: <strong>{{ totals.turnovers }}</strong></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Per Game Averages Card -->
+        <div class="col-md-5 mb-4">
+            <div class="card shadow rounded-4">
+                <div class="card-header bg-secondary text-white text-center rounded-top-4">
+                    <h5 class="mb-0">Per Game Averages</h5>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Points/Game: <strong>{{ averages.points }}</strong></li>
+                    <li class="list-group-item">Assists/Game: <strong>{{ averages.assists }}</strong></li>
+                    <li class="list-group-item">Rebounds/Game: <strong>{{ averages.rebounds }}</strong></li>
+                    <li class="list-group-item">Steals/Game: <strong>{{ averages.steals }}</strong></li>
+                    <li class="list-group-item">Blocks/Game: <strong>{{ averages.blocks }}</strong></li>
+                    <li class="list-group-item">Turnovers/Game: <strong>{{ averages.turnovers }}</strong></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Team Button -->
+    <div class="text-center mt-4">
+        <form action="{{ url_for('teams.delete_team', team_id=team.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this team?');">
+            <button type="submit" class="btn btn-outline-danger btn-lg px-4 rounded-pill">
+                <i class="bi bi-trash"></i> Delete Team
+            </button>
+        </form>
+    </div>
+
+    {% else %}
+    <div class="text-center py-5">
+        <h4 class="mb-3 text-dark">No team found yet.</h4>
+        <a href="{{ url_for('teams.add_team') }}" class="btn btn-success btn-lg rounded-pill px-4">
+            <i class="bi bi-plus-circle"></i> Add Team
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+>>>>>>> 70ff187beddc9ee504183bebd5c2abb6f07add73
