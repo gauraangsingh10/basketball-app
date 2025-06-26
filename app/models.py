@@ -2,6 +2,9 @@ from .extensions import db
 from flask_login import UserMixin
 from itsdangerous import URLSafeTimedSerializer
 
+from .extensions import db
+from flask_login import UserMixin
+
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True, nullable=False)
@@ -10,18 +13,17 @@ class User(db.Model, UserMixin):
     team_id = db.Column(db.Integer, db.ForeignKey('team.id'))
     team = db.relationship('Team', backref='users')
 
-    def get_reset_token(self, secret_key):
-        s = URLSafeTimedSerializer(secret_key)
-        return s.dumps({'user_id': self.id})
+    def get_reset_token(self, serializer):
+        return serializer.dumps({'user_id': self.id})
 
     @staticmethod
-    def verify_reset_token(token, secret_key, max_age=3600):
-        s = URLSafeTimedSerializer(secret_key)
+    def verify_reset_token(token, serializer, max_age=3600):
         try:
-            data = s.loads(token, max_age=max_age)
+            data = serializer.loads(token, max_age=max_age)
             return User.query.get(data['user_id'])
         except Exception:
             return None
+
 
 
 class Team(db.Model):
@@ -38,7 +40,13 @@ class Player(db.Model):
     jersey_number = db.Column(db.Integer, nullable=True)
     position = db.Column(db.String(20))
     team_id = db.Column(db.Integer, db.ForeignKey('team.id'), nullable=True)
+
+    # 👇 ADD THIS:
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    user = db.relationship('User', backref='players')
+
     stats = db.relationship('Stat', backref='player', lazy=True)
+
 
 
 class Game(db.Model):

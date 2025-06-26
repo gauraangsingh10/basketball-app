@@ -1,14 +1,16 @@
+import os
+from dotenv import load_dotenv
+load_dotenv()  # <--- This must be BEFORE any os.environ.get()
+
 from flask import Flask
-from .extensions import db
+from .extensions import db, migrate
 from flask_login import LoginManager
 from .models import User
-from .extensions import db, migrate
 
 # Import blueprints here
 from .routes import auth_bp, dashboard_bp, players_bp, teams_bp, games_bp, reports_bp
 from app.routes.core import core_bp
 
-import os
 
 def create_app():
     app = Flask(__name__, instance_relative_config=True)
@@ -16,6 +18,7 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///basketball.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.secret_key = os.environ.get("SECRET_KEY")
+
 
     db.init_app(app)
     migrate.init_app(app, db) 

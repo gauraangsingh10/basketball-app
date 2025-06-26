@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
-from flask_login import login_user, logout_user, current_user, login_required
+from flask_login import login_user, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from ..models import User
 from ..extensions import db
@@ -7,7 +7,12 @@ from itsdangerous import URLSafeTimedSerializer
 import os
 
 auth_bp = Blueprint('auth', __name__)
-serializer = URLSafeTimedSerializer(os.environ.get("SECRET_KEY"))
+
+def get_serializer():
+    secret_key = os.environ.get("SECRET_KEY")
+    if not secret_key:
+        raise ValueError("SECRET_KEY is not set in environment variables.")
+    return URLSafeTimedSerializer(secret_key)
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -52,7 +57,7 @@ def forgot_password():
         username = request.form.get('username')
         user = User.query.filter_by(username=username).first()
         if user:
-            token = user.get_reset_token(os.environ.get("SECRET_KEY"))
+            token = user.get_reset_token(get_serializer())
             reset_url = url_for('auth.reset_password', token=token, _external=True)
             flash(f'Password reset link (simulate): {reset_url}', 'info')
         else:
@@ -61,7 +66,7 @@ def forgot_password():
 
 @auth_bp.route('/reset_password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
-    user = User.verify_reset_token(token, os.environ.get("SECRET_KEY"))
+    user = User.verify_reset_token(token, get_serializer())
     if not user:
         flash('Invalid or expired token.', 'danger')
         return redirect(url_for('auth.login'))
@@ -74,4 +79,3 @@ def reset_password(token):
         return redirect(url_for('auth.login'))
 
     return render_template('reset_password.html')
-
