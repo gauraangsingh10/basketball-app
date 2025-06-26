@@ -2,10 +2,14 @@ import os
 from dotenv import load_dotenv
 load_dotenv()  # <--- This must be BEFORE any os.environ.get()
 
+
+
 from flask import Flask
 from .extensions import db, migrate
 from flask_login import LoginManager
 from .models import User
+
+
 
 # Import blueprints here
 from .routes import auth_bp, dashboard_bp, players_bp, teams_bp, games_bp, reports_bp
