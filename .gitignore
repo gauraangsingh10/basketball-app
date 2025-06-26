@@ -3,8 +3,6 @@ __pycache__/
 instance/
 .env
 *.db
-<<<<<<< HEAD
 venv/
-=======
 desktop.ini
->>>>>>> 70ff187beddc9ee504183bebd5c2abb6f07add73
+
