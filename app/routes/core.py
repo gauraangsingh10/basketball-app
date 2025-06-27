@@ -20,3 +20,8 @@ def home():
 def profile():
     return render_template('profile.html', user=current_user)
 
+@core_bp.route('/healthcheck')
+def healthcheck():
+    return "OK", 200
+
+
