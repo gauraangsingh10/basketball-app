@@ -1,14 +1,8 @@
 from flask import Blueprint, render_template
-from flask_login import login_required
-from ..models import Player, Game, Stat
-from ..extensions import db
-from flask import redirect, url_for
-from flask_login import current_user
-
-from flask import Blueprint, render_template
 from flask_login import login_required, current_user
 from ..models import Player, Game, Stat
 from ..extensions import db
+from sqlalchemy import func
 
 dashboard_bp = Blueprint('dashboard', __name__)
 
@@ -21,8 +15,11 @@ def dashboard():
     total_players = Player.query.filter_by(team_id=team_id, user_id=current_user.id).count()
     total_games = Game.query.filter_by(team_id=team_id).count()
 
+    # Sum points directly via two_pointers, three_pointers, free_throws
     total_points = (
-        db.session.query(db.func.sum(Stat.points))
+        db.session.query(
+            func.sum(Stat.two_pointers * 2 + Stat.three_pointers * 3 + Stat.free_throws)
+        )
         .join(Player, Stat.player_id == Player.id)
         .filter(Player.team_id == team_id, Player.user_id == current_user.id)
         .scalar() or 0

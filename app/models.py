@@ -63,13 +63,77 @@ class Stat(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     game_id = db.Column(db.Integer, db.ForeignKey('game.id'), nullable=False)
     player_id = db.Column(db.Integer, db.ForeignKey('player.id'))
+
+    # Scoring
+    two_pointers = db.Column(db.Integer, default=0)
+    three_pointers = db.Column(db.Integer, default=0)
+    free_throws = db.Column(db.Integer, default=0)
+
+    # Calculated manually for now
     points = db.Column(db.Integer, default=0)
+
+    # Playmaking
     assists = db.Column(db.Integer, default=0)
-    rebounds = db.Column(db.Integer, default=0)
+    converted_assists = db.Column(db.Integer, default=0)
+    missed_assists = db.Column(db.Integer, default=0)
+
+    # Rebounds
+    off_rebounds = db.Column(db.Integer, default=0)
+    def_rebounds = db.Column(db.Integer, default=0)
+
+    # Defense
     steals = db.Column(db.Integer, default=0)
     blocks = db.Column(db.Integer, default=0)
-    fouls = db.Column(db.Integer, default=0)
-    turnovers = db.Column(db.Integer, default=0)
+
+    # Fouls and Violations
+    personal_fouls = db.Column(db.Integer, default=0)
+    unsportsmanlike_fouls = db.Column(db.Integer, default=0)
+    three_sec_violations = db.Column(db.Integer, default=0)
+    five_sec_violations = db.Column(db.Integer, default=0)
+
+    # Turnovers
+    bad_passes = db.Column(db.Integer, default=0)
+    traveling = db.Column(db.Integer, default=0)
+
+    turnovers = db.Column(db.Integer, default=0)  # May auto-calculate from others
     minutes_played = db.Column(db.Integer, default=0)
 
     game = db.relationship('Game', backref='stats')
+
+    @property
+    def total_rebounds(self):
+        return self.off_rebounds + self.def_rebounds
+    
+    @property 
+    def points(self):
+        return (
+            self.two_pointers * 2 +
+            self.three_pointers * 3 +
+            self.free_throws
+        )
+
+    @property
+    def total_fouls(self):
+        return self.personal_fouls + self.unsportsmanlike_fouls
+
+    @property
+    def total_turnovers(self):
+        return (
+            self.turnovers +
+            self.three_sec_violations +
+            self.five_sec_violations +
+            self.bad_passes +
+            self.traveling
+        )
+
+    @property
+    def rating(self):
+        return (
+            self.points * 1 +
+            self.total_rebounds * 1.2 +
+            self.assists * 1.5 +
+            self.steals * 3 +
+            self.blocks * 3 -
+            self.total_turnovers * 2 -
+            self.total_fouls * 1
+        )

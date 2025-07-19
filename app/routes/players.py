@@ -15,28 +15,38 @@ def player_stats():
 
     for player in players:
         stats = Stat.query.filter_by(player_id=player.id).all()
-        total_points = sum(s.points for s in stats)
-        total_assists = sum(s.assists for s in stats)
-        total_rebounds = sum(s.rebounds for s in stats)
-        total_blocks = sum(s.blocks for s in stats)
-        total_steals = sum(s.steals for s in stats)
-        total_fouls = sum(s.fouls for s in stats)
-        total_turnovers = sum(s.turnovers for s in stats)
-        minutes_played = sum(s.minutes_played for s in stats)
 
-        # Assign values to dynamic fields
-        player.total_points = total_points
-        player.total_assists = total_assists
-        player.total_rebounds = total_rebounds
-        player.total_blocks = total_blocks
-        player.total_steals = total_steals
-        player.total_fouls = total_fouls
-        player.total_turnovers = total_turnovers
-        player.minutes_played = minutes_played
+        player.total_points = sum(s.points for s in stats)
+        player.total_assists = sum(s.assists for s in stats)
+        player.total_rebounds = sum(s.total_rebounds for s in stats)
+        player.total_blocks = sum(s.blocks for s in stats)
+        player.total_steals = sum(s.steals for s in stats)
+        player.total_fouls = sum(s.total_fouls for s in stats)
+        player.total_turnovers = sum(s.total_turnovers for s in stats)
+        player.minutes_played = sum(s.minutes_played for s in stats)
+
+        player.two_pointers = sum(s.two_pointers for s in stats)
+        player.three_pointers = sum(s.three_pointers for s in stats)
+        player.free_throws = sum(s.free_throws for s in stats)
+
+        # ✅ Add these sums:
+        player.converted_assists = sum(s.converted_assists for s in stats)
+        player.missed_assists = sum(s.missed_assists for s in stats)
+        player.off_rebounds = sum(s.off_rebounds for s in stats)
+        player.def_rebounds = sum(s.def_rebounds for s in stats)
+        player.three_sec_viol = sum(s.three_sec_violations for s in stats)
+        player.five_sec_viol = sum(s.five_sec_violations for s in stats)
+        player.bad_passes = sum(s.bad_passes for s in stats)
+        player.traveling = sum(s.traveling for s in stats)
+        player.personal_fouls = sum(s.personal_fouls for s in stats)
+        player.unsportsmanlike_fouls = sum(s.unsportsmanlike_fouls for s in stats)
+        player.rating = sum(s.rating for s in stats)  # You can also compute avg if needed
 
         player_data.append(player)
 
     return render_template('player_stats.html', players=player_data)
+
+
 
 
 @players_bp.route('/player/<int:player_id>')
@@ -99,35 +109,61 @@ def add_player():
 @players_bp.route('/add_stat', methods=['GET', 'POST'])
 @login_required
 def add_stat():
-    # Only fetch players and games for the current user's team
     players = Player.query.filter_by(team_id=current_user.team_id, user_id=current_user.id).all()
-
     games = Game.query.filter_by(team_id=current_user.team_id).all()
 
     if request.method == 'POST':
         player_id = int(request.form.get('player_id'))
         game_id = int(request.form.get('game_id'))
-        points = int(request.form.get('points') or 0)
-        rebounds = int(request.form.get('rebounds') or 0)
+
+        two_pointers = int(request.form.get('two_pointers') or 0)
+        three_pointers = int(request.form.get('three_pointers') or 0)
+        free_throws = int(request.form.get('free_throws') or 0)
+
+        off_rebounds = int(request.form.get('off_rebounds') or 0)
+        def_rebounds = int(request.form.get('def_rebounds') or 0)
+
         assists = int(request.form.get('assists') or 0)
+        converted_assists = int(request.form.get('converted_assists') or 0)
+        missed_assists = int(request.form.get('missed_assists') or 0)
+
         blocks = int(request.form.get('blocks') or 0)
         steals = int(request.form.get('steals') or 0)
-        fouls = int(request.form.get('fouls') or 0)
+
+        personal_fouls = int(request.form.get('personal_fouls') or 0)
+        unsportsmanlike_fouls = int(request.form.get('unsportsmanlike_fouls') or 0)
+
         turnovers = int(request.form.get('turnovers') or 0)
+        three_sec_violations = int(request.form.get('three_sec_violations') or 0)
+        five_sec_violations = int(request.form.get('five_sec_violations') or 0)
+        bad_passes = int(request.form.get('bad_passes') or 0)
+        traveling = int(request.form.get('traveling') or 0)
+
         minutes_played = int(request.form.get('minutes_played') or 0)
 
         stat = Stat(
             player_id=player_id,
             game_id=game_id,
-            points=points,
-            rebounds=rebounds,
+            two_pointers=two_pointers,
+            three_pointers=three_pointers,
+            free_throws=free_throws,
             assists=assists,
+            converted_assists=converted_assists,
+            missed_assists=missed_assists,
+            off_rebounds=off_rebounds,
+            def_rebounds=def_rebounds,
             blocks=blocks,
             steals=steals,
-            fouls=fouls,
+            personal_fouls=personal_fouls,
+            unsportsmanlike_fouls=unsportsmanlike_fouls,
             turnovers=turnovers,
+            three_sec_violations=three_sec_violations,
+            five_sec_violations=five_sec_violations,
+            bad_passes=bad_passes,
+            traveling=traveling,
             minutes_played=minutes_played
         )
+
         db.session.add(stat)
         db.session.commit()
         flash("Stat added successfully", "success")
